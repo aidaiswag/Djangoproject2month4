@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from celebrities.views import list_celebrities
+from celebrities.views import list_celebrities, detail_celebrity, home
+from django.conf import settings
+from django.conf.urls import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("celebrities/", list_celebrities)
-]
+    path('', home),
+    path("celebrities/", list_celebrities),
+    path("celebrities/<int:id>/", detail_celebrity)
+] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

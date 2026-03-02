@@ -1,0 +1,17 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<div class="celebrity" style="width: 100%; border: 1px solid; border-color: black; margin: 10px">
+    {% if celebrity.image %}
+    <img src="{{celebrity.image.url}}">
+    {% endif %}
+    <h2>{{ celebrity.name }}</h2>
+    <p>Biography: {{ celebrity.biography }}</p>
+    <p>Career: {{ celebrity.career }}</p>
+    <p>Childhood: {{ celebrity.childhood }}</p>
+    <p>{{ celebrity.created_at }}</p>
+    <p>{{ celebrity.updated_at }}</p>
+</div>
+
+{% endblock content %}
