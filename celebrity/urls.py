@@ -19,11 +19,23 @@ from django.urls import path
 from celebrities.views import list_celebrities, detail_celebrity, home, create_celebrity
 from django.conf import settings
 from django.conf.urls import static
+from users.views import sign_up, sign_in, sign_out
+
+users = [
+    path("users/sign-up/", sign_up),
+    path("users/sign-in/", sign_in),
+    path("users/sign-out/", sign_out)
+]
+ 
+celebrities = [
+    path("celebrities/", list_celebrities),
+    path("celebrities/<int:id>/", detail_celebrity),
+    path("celebrities/create/", create_celebrity)
+] 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
-    path("celebrities/", list_celebrities),
-    path("celebrities/<int:id>/", detail_celebrity),
-    path("celebrities/create/", create_celebrity)
+    *celebrities,
+    *users
 ] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
