@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from celebrities.models import Celebrity
-from celebrities.forms import CreateCelebrityForm
+from celebrities.forms import CreateCelebrityForm, SearchForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q 
 
 # Create your views here.
 def home(request):
@@ -12,7 +13,22 @@ def home(request):
 def list_celebrities(request):
      if request.method == "GET":
         all_celebrities = Celebrity.objects.all()
-        return render(request=request, template_name="t_celebrities/list_celebrities.html", context={"celebrities": all_celebrities})    
+        form = SearchForm(request.GET)
+        if not form.is_valid():
+            return HttpResponse("Не существующий параметр")
+        search = form.cleaned_data.get("search", None)
+        category = form.cleaned_data.get("category", None)  
+        career = form.cleaned_data.get("career", None)
+        professions = form.cleaned_data.get("professions", None)
+        if search:           
+            all_celebrities = all_celebrities.filter(Q(name__icontains=search) |  Q(biography__icontains=search))
+        if category:
+            all_celebrities = all_celebrities.filter(category=category) 
+        if career:
+            print(career)
+        if professions:
+            all_celebrities=all_celebrities.filter(professions__in=professions)    
+        return render(request=request, template_name="t_celebrities/list_celebrities.html", context={"celebrities": all_celebrities, "form": form})    
 
 def detail_celebrity(request, id):
     if request.method == "GET":
