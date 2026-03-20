@@ -11,8 +11,16 @@ def home(request):
     return render (request, "home.html" )
 
 def list_celebrities(request):
-     if request.method == "GET":
+    if request.method == "GET":
         all_celebrities = Celebrity.objects.all()
+        limit = 3
+        page = int(request.GET.get("page", 1))
+        max_page = all_celebrities.count() // limit + 1  
+        list_pages = range(1, max_page + 1)
+        start = (page -1) * limit
+        end = page * limit
+        all_celebrities = all_celebrities[start: end]
+        
         form = SearchForm(request.GET)
         if not form.is_valid():
             return HttpResponse("Не существующий параметр")
@@ -28,7 +36,10 @@ def list_celebrities(request):
             print(career)
         if professions:
             all_celebrities=all_celebrities.filter(professions__in=professions)    
-        return render(request=request, template_name="t_celebrities/list_celebrities.html", context={"celebrities": all_celebrities, "form": form})    
+        return render(
+            request=request, template_name="t_celebrities/list_celebrities.html", 
+            context={"celebrities": all_celebrities, "form": form, "list_pages": list_pages}
+            )    
 
 def detail_celebrity(request, id):
     if request.method == "GET":
